@@ -1,0 +1,13 @@
+{% load note_tags %}
+{% load cache %}
+<footer class="entry-meta">
+    本条目发布于<a href="{{ note.get_absolute_url }}" title="{% datetimeformat note.pub_time %}"
+             itemprop="datePublished" content="{% datetimeformat note.pub_time %}"
+             rel="bookmark">
+
+    <time class="entry-date updated"
+          datetime="{{ note.pub_time }}">
+        {% datetimeformat note.pub_time %}</time>
+</a>
+</footer><!-- .entry-meta -->
+

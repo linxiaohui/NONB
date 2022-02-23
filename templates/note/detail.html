@@ -1,0 +1,49 @@
+{% extends 'common/base.html' %}
+{% load note_tags %}
+
+{% block header %}
+    <title>{{ note.title }} | {{ SITE_DESCRIPTION }}</title>
+    <meta property="og:type" content="note"/>
+    <meta property="og:title" content="{{ note.title }}"/>
+    <meta property="og:description" content="{{ note.body|custom_markdown|striptags|truncatewords:1 }}"/>
+    <meta property="og:url"
+          content="{{ note.get_full_url }}"/>
+    <meta property="note:published_time" content="{% datetimeformat note.pub_time %}"/>
+    <meta property="note:modified_time" content="{% datetimeformat note.pub_time %}"/>
+    <meta property="note:section" content="{{ note.category.name }}"/>
+    {% for t in note.tags.all %}
+        <meta property="note:tag" content="{{ t.name }}"/>
+    {% endfor %}
+    <meta property="og:site_name" content="{{ SITE_NAME }}"/>
+    <meta name="description" content="{{ note.body|custom_markdown|striptags|truncatewords:1 }}"/>
+    {% if note.tags %}
+        <meta name="keywords" content="{{ note.tags.all|join:"," }}"/>
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    <div id="primary" class="site-content">
+        <div id="content" role="main">
+            {% load_note_detail note False %}
+
+            <nav class="nav-single">
+                <h3 class="assistive-text">文章导航</h3>
+                {% if next_article %}
+                    <span class="nav-previous"><a href="{{ next_article.get_absolute_url }}" rel="prev"><span
+                            class="meta-nav">&larr;</span> {{ next_article.title }}</a></span>
+                {% endif %}
+                {% if prev_article %}
+                    <span class="nav-next"><a href="{{ prev_article.get_absolute_url }}"
+                                              rel="next">{{ prev_article.title }} <span
+                            class="meta-nav">&rarr;</span></a></span>
+                {% endif %}
+            </nav><!-- .nav-single -->
+        </div><!-- #content -->
+
+    </div><!-- #primary -->
+
+{% endblock %}
+
+{% block sidebar %}
+    {% load_sidebar user "p" %}
+{% endblock %}

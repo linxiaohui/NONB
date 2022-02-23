@@ -1,0 +1,18 @@
+<nav id="site-navigation" class="main-navigation" role="navigation">
+    <div class="menu-e88f9ce58d95-container">
+        <ul id="menu-e88f9ce58d95" class="nav-menu">
+            <li id="menu-item-58d95"
+                class="menu-item menu-item-type-custom menu-item-object-custom current-menu-item current_page_item menu-item-home menu-item-58d95">
+                <a href="/">首页</a>
+            </li>
+            {% load note_tags %}
+            {% query nav_category_list parent_category=None as root_categorys %}
+            {% for node in root_categorys %}
+                {% include 'common/nav_node.html' %}
+            {% endfor %}
+            <li class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-has-children">
+                <a href="{% url "note:archives" %}">文章归档</a>
+            </li>
+        </ul>
+    </div>
+</nav><!-- #site-navigation -->

@@ -1,0 +1,42 @@
+{% load note_tags %}
+{% load cache %}
+<article id="post-{{ note.pk }} "
+         class="post-{{ note.pk }} post type-post status-publish format-standard hentry">
+    <header class="entry-header">
+        <h1 class="entry-title">
+            {% if  isindex %}
+                {% if note.article_order > 0 %}
+                    <a href="{{ note.get_absolute_url }}"
+                       rel="bookmark">【置顶】{{ note.title }}</a>
+                {% else %}
+                    <a href="{{ note.get_absolute_url }}"
+                       rel="bookmark">{{ note.title }}</a>
+                {% endif %}
+
+            {% else %}
+                {{ note.title }}
+            {% endif %}
+        </h1>
+        <br/>
+    </header><!-- .entry-header -->
+
+    <div class="entry-content" itemprop="articleBody">
+        {% if  isindex %}
+            {{ note.body|custom_markdown|escape|truncatechars_content }}
+            <p class='read-more'><a
+                    href=' {{ note.get_absolute_url }}'>Read more</a></p>
+        {% else %}
+                {% get_markdown_toc note.body as toc %}
+                <b>目录:</b>
+                {{ toc|safe }}
+                <hr class="break_line"/>
+            <div class="article">
+                {{ note.body|custom_markdown|escape }}
+            </div>
+        {% endif %}
+
+    </div><!-- .entry-content -->
+
+    {% load_note_metas note %}
+
+</article><!-- #post -->

@@ -1,0 +1,67 @@
+{% load static %}
+{% load cache %}
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width"/>
+    {% block header %}
+    {% endblock %}
+    <link rel="profile" href="http://gmpg.org/xfn/11"/>
+
+    <!--[if lt IE 9]>
+    <script src="{% static 'note/js/html5.js' %}" type="text/javascript"></script>
+    <![endif]-->
+
+    <link rel="alternate" type="application/rss+xml" title="{{ SITE_NAME }} &raquo; Feed"
+          href="/feed"/>
+    <link rel='stylesheet preload' as="font" id='twentytwelve-fonts-css'
+          href='{% static 'note/fonts/fonts.css' %}'
+          type='text/css' media='all'/>
+
+        <link rel='stylesheet' id='twentytwelve-style-css' href='{% static 'note/css/style.css' %}' type='text/css'
+              media='all'/>
+        {% comment %}<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>{% endcomment %}
+        <!--[if lt IE 9]>
+        <link rel='stylesheet' id='twentytwelve-ie-css'  href='{% static 'note/css/ie.css' %}' type='text/css' media='all' />
+        <![endif]-->
+        <link rel="stylesheet" href="{% static 'pygments/default.css' %}"/>
+        <link rel="stylesheet" href="{% static 'note/css/nprogress.css' %}">
+
+</head>
+
+<body class="home blog custom-font-enabled">
+<div id="page" class="hfeed site">
+    <header id="masthead" class="site-header" role="banner">
+        <hgroup>
+            <h1 class="site-title"><a href="/" title="{{ SITE_NAME }}" rel="home">{{ SITE_NAME }}</a>
+            </h1>
+            <h2 class="site-description">{{ SITE_DESCRIPTION }}</h2>
+        </hgroup>
+
+        {% include 'common/nav.html' %}
+
+    </header><!-- #masthead -->
+    <div id="main" class="wrapper">
+
+        {% block content %}
+        {% endblock %}
+
+
+        {% block sidebar %}
+        {% endblock %}
+
+
+    </div><!-- #main .wrapper -->
+    {% include 'common/footer.html' %}
+</div><!-- #page -->
+
+</body>
+<footer>
+        <script type="text/javascript" src="{% static 'note/js/jquery-3.6.0.min.js' %}"></script>
+        <script type="text/javascript" src="{% static 'note/js/nprogress.js' %}"></script>
+        <script src="{% static 'note/js/note.js' %}" type="application/javascript"></script>
+        <script src="{% static 'note/js/navigation.js' %}" type="application/javascript"></script>
+    {% block footer %}
+    {% endblock %}
+</footer>
+</html>
