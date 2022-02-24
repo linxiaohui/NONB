@@ -39,17 +39,33 @@ def extract_md(filename: str) -> Tuple[str, str, str, str, List[str], str]:
             if k == "tags":
                 tags = v.replace('[', '').replace(']', '').split(',')
         body = fp.read()
-        # 将 {% post_link 2020-01-01-xxxxx nnnnn %} 修改为 [nnnnn](/note/2020/1/1/xxxxx.html)
-        inner_link_pattern = re.compile(r'\{\%[ ]*post_link[ ]+(\d{4})-(\d{2})-(\d{2})-([^ ]+)[ ]+([^ ]+)[ ]*\%\}')
+        # 将 {% post_link 2020-01-01-xxxxx nnnnn %} 修改为 [nnnnn](/note/2020/1/1/2020-01-01-xxxxx.html)
+        inner_link_pattern = re.compile(
+            r'\{\%[ ]*post_link[ ]+(\d{4})-(\d{2})-(\d{2})-([^ ]+)[ ]+([^ ]+|"[^"]+")[ ]*\%\}')
 
         def _convert(matched):
             _yyyy = matched.group(1)
             _mm = matched.group(2)
             _dd = matched.group(3)
             _filename = matched.group(4)
-            _title = matched.group(5)
-            return f"[{_title}](/note/{int(_yyyy)}/{int(_mm)}/{int(_dd)}/{_filename}.html)"
+            _title = matched.group(5).strip('"')
+            return f"[{_title}](/note/{int(_yyyy)}/{int(_mm)}/{int(_dd)}/{_yyyy}-{_mm}-{_dd}-{_filename}.html)"
         body = inner_link_pattern.sub(_convert, body)
+
+        # 将{% post_path 2021-06-01-python-packages %}#pyftpdlib
+        # 修改为 /note/2021/6/1/2021-06-01-python-packages.html#pyftpdlib
+        inner_link_pattern2 = re.compile(
+            r'\{\%[ ]*post_path[ ]+(\d{4})-(\d{2})-(\d{2})-([^ ]+)[ ]*\%\}#([^ ]+)')
+
+        def _convert2(matched):
+            _yyyy = matched.group(1)
+            _mm = matched.group(2)
+            _dd = matched.group(3)
+            _filename = matched.group(4)
+            _anchor = matched.group(5)
+            return f"/note/{int(_yyyy)}/{int(_mm)}/{int(_dd)}/{_yyyy}-{_mm}-{_dd}-{_filename}.html#{_anchor}"
+        body = inner_link_pattern2.sub(_convert2, body)
+
     return os.path.basename(filename), title, date, category, tags, body
 
 
