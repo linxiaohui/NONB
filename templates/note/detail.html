@@ -19,6 +19,12 @@
     {% if note.tags %}
         <meta name="keywords" content="{{ note.tags.all|join:"," }}"/>
     {% endif %}
+    <style>
+        /* 搜索关键词高亮 */
+        code {
+          color: red;
+        }
+    </style>
 {% endblock %}
 
 {% block content %}

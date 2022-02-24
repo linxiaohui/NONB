@@ -43,7 +43,7 @@ INSTALLED_APPS = [
 HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.whoosh_backend.WhooshEngine',
-        'PATH': os.path.join(os.path.dirname(__file__), 'whoosh_index'),
+        'PATH': os.environ.get('WHOOSH_INDEX_PATH', os.path.join(os.path.dirname(__file__), 'whoosh_index')),
     },
 }
 HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
@@ -86,10 +86,10 @@ WSGI_APPLICATION = 'NONB.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'nonb',
-        'USER': 'nonb',
-        'PASSWORD': 'nonb',
-        'HOST': '127.0.0.1',
+        'NAME': os.environ.get('DB_MYSQL_NAME', 'nonb'),
+        'USER': os.environ.get('DB_MYSQL_USER', 'nonb'),
+        'PASSWORD': os.environ.get('DB_MYSQL_PASS', 'nonb'),
+        'HOST': os.environ.get('DB_MYSQL_HOST', '127.0.0.1'),
         'PORT': 3306,
         'OPTIONS': {'charset': 'utf8mb4'}
     }
