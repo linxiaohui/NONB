@@ -5,6 +5,7 @@
 """
 
 import os
+import re
 import sys
 import glob
 from datetime import datetime
@@ -38,6 +39,17 @@ def extract_md(filename: str) -> Tuple[str, str, str, str, List[str], str]:
             if k == "tags":
                 tags = v.replace('[', '').replace(']', '').split(',')
         body = fp.read()
+        # 将 {% post_link 2020-01-01-xxxxx nnnnn %} 修改为 [nnnnn](/note/2020/1/1/xxxxx.html)
+        inner_link_pattern = re.compile(r'\{\%[ ]*post_link[ ]+(\d{4})-(\d{2})-(\d{2})-([^ ]+)[ ]+([^ ]+)[ ]*\%\}')
+
+        def _convert(matched):
+            _yyyy = matched.group(1)
+            _mm = matched.group(2)
+            _dd = matched.group(3)
+            _filename = matched.group(4)
+            _title = matched.group(5)
+            return f"[{_title}](/note/{int(_yyyy)}/{int(_mm)}/{int(_dd)}/{_filename}.html)"
+        body = inner_link_pattern.sub(_convert, body)
     return os.path.basename(filename), title, date, category, tags, body
 
 
@@ -70,7 +82,8 @@ def insert_into_db(filename: str, title: str, date: str, category: str, tags: Li
 
 
 if __name__ == "__main__":
-    file_list = glob.iglob(os.path.join(sys.argv[1], "**"), recursive=True)
+    file_list = glob.glob(os.path.join(sys.argv[1], "**"), recursive=True)
+    file_list = sorted(file_list, key=lambda fn: os.path.basename(fn))
     for f in file_list:
         if f.endswith(".md") or f.endswith(".markdown"):
             k = extract_md(f)
