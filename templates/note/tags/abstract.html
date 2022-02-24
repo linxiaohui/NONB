@@ -1,0 +1,22 @@
+{% load note_tags %}
+{% load highlight %}
+<article id="post-{{ note.pk }} "
+         class="post-{{ note.pk }} post type-post status-publish format-standard hentry">
+    <header class="entry-header">
+        <h1 class="entry-title">
+            {% if note.article_order > 0 %}
+                <a href="{{ note.get_absolute_url }}"
+                   rel="bookmark">【置顶】{{ note.title }}</a>
+            {% else %}
+                <a href="{{ note.get_absolute_url }}"
+                   rel="bookmark">{{ note.title }}</a>
+            {% endif %}
+        </h1>
+        <br/>
+    </header><!-- .entry-header -->
+    <div class="article">
+    {% highlight note.body with query %}
+    </div>
+    {% load_note_metas note %}
+
+</article><!-- #post -->

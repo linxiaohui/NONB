@@ -181,6 +181,18 @@ def load_note_detail(note, isindex):
     }
 
 
+@register.inclusion_tag('note/tags/abstract.html')
+def load_note_abstract(note, query1):
+    """
+    加载文章详情
+    isindex:是否列表页，若是列表页只显示摘要
+    """
+    return {
+        'note': note,
+        'query': query1,
+    }
+
+
 @register.simple_tag
 def query(qs, **kwargs):
     """ template tag which allows queryset filtering. Usage:

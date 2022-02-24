@@ -26,11 +26,7 @@
             {% endif %}
             {% if query and page.object_list %}
                 {% for note in page.object_list %}
-                    <div class="textwidget custom-html-widget">
-                    {% highlight note.object.body with query %}
-                        {{ note.content_type }}
-                    </div>
-                    {% load_note_detail note.object True %}
+                    {% load_note_abstract note.object query %}
                 {% endfor %}
                 {% if page.has_previous or page.has_next %}
                     <nav id="nav-below" class="navigation" role="navigation">
