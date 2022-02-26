@@ -8,6 +8,7 @@ import os
 import re
 import sys
 import glob
+import base64
 from datetime import datetime
 from typing import List, Tuple
 
@@ -66,19 +67,25 @@ def extract_md(filename: str) -> Tuple[str, str, str, str, List[str], str]:
             return f"/note/{int(_yyyy)}/{int(_mm)}/{int(_dd)}/{_yyyy}-{_mm}-{_dd}-{_filename}.html#{_anchor}"
         body = inner_link_pattern2.sub(_convert2, body)
 
+        # 图片, 将 {% asset_img 2020-05-18-linux-mint-macos.png 效果图 %} 替换为markdown图片语法
+        # 图片采用base64
+        image_pattern = re.compile(r'\{\%[ ]*asset_img[ ]+([^ ]+)[ ]+([^ ]+)\%\}')
+        images_base64 = []
+
+        def _convert_img(matched):
+            image_id = len(images_base64)
+            image_file_name = matched.group(1)
+            title = matched.group(2)
+            img_path = os.path.join(os.path.splitext(filename)[0], image_file_name)
+            with open(img_path, "rb") as fp:
+                images_base64.append(base64.b64encode(fp.read()).decode())
+            return f"![{title}][{image_id}]"
+
+        body = image_pattern.sub(_convert_img, body)
+        for _img_id, _img_data in enumerate(images_base64):
+            body += f"\n[{_img_id}]: {_img_data}"
+    
     return os.path.basename(filename), title, date, category, tags, body
-
-
-def get_or_create_category(category: str) -> int:
-    """获取分类的ID，若分类不存在则创建"""
-    cat = Category.objects.get_or_create(name=category)
-    return cat[0].id
-
-
-def get_or_create_tag(tag: str) -> int:
-    """获取标签的ID，若不存在则创建"""
-    t = Tag.objects.get_or_create(name=tag)
-    return t[0].id
 
 
 def insert_into_db(filename: str, title: str, date: str, category: str, tags: List[str], body: str) -> None:
