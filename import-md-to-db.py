@@ -79,7 +79,7 @@ def extract_md(filename: str) -> Tuple[str, str, str, str, List[str], str]:
             img_path = os.path.join(os.path.splitext(filename)[0], image_file_name)
             with open(img_path, "rb") as fp:
                 image_base64 = base64.b64encode(fp.read()).decode()
-            return f"![{title}]{image_base64}"
+            return f"![{title}](data:image/png;base64,{image_base64})"
 
         body = image_pattern.sub(_convert_img, body)
         
