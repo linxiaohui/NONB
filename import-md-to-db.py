@@ -78,12 +78,11 @@ def extract_md(filename: str) -> Tuple[str, str, str, str, List[str], str]:
             title = matched.group(2)
             img_path = os.path.join(os.path.splitext(filename)[0], image_file_name)
             with open(img_path, "rb") as fp:
-                images_base64.append(base64.b64encode(fp.read()).decode())
-            return f"![{title}][{image_id}]"
+                image_base64 = base64.b64encode(fp.read()).decode()
+            return f"![{title}]{image_base64}"
 
         body = image_pattern.sub(_convert_img, body)
-        for _img_id, _img_data in enumerate(images_base64):
-            body += f"\n[{_img_id}]: {_img_data}"
+        
     
     return os.path.basename(filename), title, date, category, tags, body
 
