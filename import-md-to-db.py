@@ -70,20 +70,17 @@ def extract_md(filename: str) -> Tuple[str, str, str, str, List[str], str]:
         # 图片, 将 {% asset_img 2020-05-18-linux-mint-macos.png 效果图 %} 替换为markdown图片语法
         # 图片采用base64
         image_pattern = re.compile(r'\{\%[ ]*asset_img[ ]+([^ ]+)[ ]+([^ ]+)[ ]*\%\}')
-        images_base64 = []
 
         def _convert_img(matched):
-            image_id = len(images_base64)
             image_file_name = matched.group(1)
-            title = matched.group(2)
+            _title = matched.group(2)
             img_path = os.path.join(os.path.splitext(filename)[0], image_file_name)
-            with open(img_path, "rb") as fp:
-                image_base64 = base64.b64encode(fp.read()).decode()
-            return f"![{title}](data:image/png;base64,{image_base64})"
+            with open(img_path, "rb") as _fp:
+                image_base64 = base64.b64encode(_fp.read()).decode()
+            return f"![{_title}](data:image/png;base64,{image_base64})"
 
         body = image_pattern.sub(_convert_img, body)
-        
-    
+
     return os.path.basename(filename), title, date, category, tags, body
 
 
