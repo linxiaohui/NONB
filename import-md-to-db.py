@@ -92,7 +92,7 @@ def insert_into_db(filename: str, title: str, date: str, category: str, tags: Li
     # n = Note(file_name=os.path.splitext(filename)[0], last_mod_time=last_mod_time, pub_time=pub_time,
     #          title=title, body=body, status='p', category_id=category_id
     #          )
-    n = Note.objects.get_or_create(filename=os.path.splitext(filename)[0])
+    n = Note.objects.get_or_create(file_name=os.path.splitext(filename)[0])
     n.title = title
     if n.body != body:
         n.last_mod_time = datetime.now().strptime(date, "%Y-%m-%d %H:%M:%S")
