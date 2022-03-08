@@ -86,17 +86,27 @@ def extract_md(filename: str) -> Tuple[str, str, str, str, List[str], str]:
 
 def insert_into_db(filename: str, title: str, date: str, category: str, tags: List[str], body: str) -> None:
     pub_time = datetime.strptime(date, "%Y-%m-%d %H:%M:%S")
-    last_mod_time = pub_time
     # 获取category_id
     cat = Category.objects.get_or_create(name=category.strip())
     category_id = cat[0].id
-    n = Note(file_name=os.path.splitext(filename)[0], last_mod_time=last_mod_time, pub_time=pub_time,
-             title=title, body=body, status='p', category_id=category_id
-             )
+    # n = Note(file_name=os.path.splitext(filename)[0], last_mod_time=last_mod_time, pub_time=pub_time,
+    #          title=title, body=body, status='p', category_id=category_id
+    #          )
+    n = Note.objects.get_or_create(filename=os.path.splitext(filename)[0])
+    n.title = title
+    if n.body != body:
+        n.last_mod_time = datetime.now().strptime(date, "%Y-%m-%d %H:%M:%S")
+    else:
+        n.last_mod_time = pub_time
+    n.body = body
+    n.pub_time = pub_time
+    n.category_id = category_id
+    n.status = 'p'
     n.save()
     for tag in tags:
         tag_name = tag.strip()
         t = Tag.objects.get_or_create(name=tag_name)
+        n.tags.remove(t[0])
         n.tags.add(t[0])
 
 
