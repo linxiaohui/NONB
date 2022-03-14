@@ -8,6 +8,11 @@
     <time class="entry-date updated"
           datetime="{{ note.pub_time }}">
         {% datetimeformat note.pub_time %}</time>
-</a>
+    </a>
+    最后修改于
+    <time class="entry-date updated"
+          datetime="{{ note.last_mod_time }}">
+        {% datetimeformat note.last_mod_time %}</time>
+
 </footer><!-- .entry-meta -->
 
